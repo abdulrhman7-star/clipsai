@@ -4,3 +4,4 @@ tests
 sandbox
 report
 *.md
+!README.md
