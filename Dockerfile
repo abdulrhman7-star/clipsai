@@ -6,6 +6,10 @@ WORKDIR /app
 
 COPY . /app
 
+# تثبيت PyTorch للـ CPU فقط (حجم أقل من 200 ميجا بدلاً من 2 جيجا)
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# الآن تثبيت باقي الاعتماديات (سيرى أن torch مثبت بالفعل ولن يحاول تثبيت نسخة CUDA)
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
