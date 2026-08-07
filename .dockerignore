@@ -1,0 +1,7 @@
+.git
+.gitignore
+tests
+sandbox
+report
+*.md
+*.txt
