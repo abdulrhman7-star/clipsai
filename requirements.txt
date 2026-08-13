@@ -1,4 +1,11 @@
-streamlit
-python-magic
+streamlit>=1.28.0
+python-magic>=0.4.27
 git+https://github.com/m-bain/whisperx.git
--e .
+torch>=2.9.0
+numpy<2.0
+ctranslate2>=4.5.0
+faster-whisper>=1.2.0
+nltk>=3.9.1
+omegaconf>=2.3.0
+pyannote-audio>=4.0.0
+huggingface-hub>=0.28.1
