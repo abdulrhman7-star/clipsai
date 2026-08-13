@@ -1,16 +1,31 @@
-FROM python:3.11-slim
+# استخدم إصدار Python المناسب (موجود في runtime.txt)
+FROM python:3.10-slim
 
-RUN apt-get update && apt-get install -y ffmpeg libmagic1 git && rm -rf /var/lib/apt/lists/*
-
+# تعيين دليل العمل
 WORKDIR /app
 
-COPY . /app
+# تثبيت حزم النظام الضرورية (ffmpeg و libmagic)
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libmagic1 \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-# تثبيت PyTorch للـ CPU فقط (حجم أقل من 200 ميجا بدلاً من 2 جيجا)
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+# نسخ ملفات المتطلبات
+COPY requirements.txt .
+COPY packages.txt .
 
-# الآن تثبيت باقي الاعتماديات (سيرى أن torch مثبت بالفعل ولن يحاول تثبيت نسخة CUDA)
+# تثبيت حزم Python (لاحظ أن whisperx يحتاج تثبيت خاص)
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir whisperx@git+https://github.com/m-bain/whisperx.git
 
-EXPOSE 8080
-CMD ["streamlit", "run", "app.py", "--server.port", "8080", "--server.address", "0.0.0.0"]
+# نسخ باقي الكود
+COPY . .
+
+# متغير المنفذ
+ENV PORT=8000
+EXPOSE $PORT
+
+# أمر التشغيل (يقرأ PORT من البيئة)
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT}"]
